@@ -17,6 +17,9 @@ class Comment
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $grade = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
@@ -41,6 +44,18 @@ class Comment
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getGrade(): ?int
+    {
+        return $this->grade;
+    }
+
+    public function setGrade(int $grade): static
+    {
+        $this->grade = $grade;
 
         return $this;
     }

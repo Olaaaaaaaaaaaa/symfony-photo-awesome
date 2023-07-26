@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MediaController!
+{% endblock %}
+
+{% block body %}
+	<h1>{{ media.title }}</h1>
+
+	<h3>{{ media.description }}</h3>
+
+	<p>Créer le
+		{{ media.createdAt|date('d/m/Y') }}
+		à
+		{{ media.createdAt|date('H:i:s') }}, par
+		{{ media.user.email }}</p>
+
+	<h5>Catégories :</h5>
+
+	{% for category in media.categories %}
+		<ul>
+			<li>{{ category.label }}</li>
+		</ul>
+	{% endfor %}
+
+	{% set i = 1 %}
+	{% for comment in media.comments %}
+		{% set i = i + 1 %}
+	{% endfor %}
+	<p>Nombre de commentaires :
+		{{ i }}</p>
+
+{% endblock %}

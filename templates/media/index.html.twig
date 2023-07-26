@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MediaController!
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des medias !</h1>
+
+	<form>
+		<label for="search">Recherche:</label>
+		<input type="text" id="search" name="search">
+		<button class="btn">submit</button>
+	</form>
+	<ul>
+		{% for media in medias %}
+			<li>
+				<a href="{{ path('app_media_show', {'id': media.id}) }}">{{ media.title }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

@@ -35,13 +35,17 @@ class SetAdminCommand extends Command
         $tbl = ['email' => $userEmail];
 
         $userEntity = $this->userRepository->findOneBy($tbl);
-        $userEntity->setRoles(["ROLE_ADMIN"]);
+        if ($userEntity !== null) {
+            $userEntity->setRoles(["ROLE_ADMIN"]);
 
-        $this->entityManager->persist($userEntity);
-        $this->entityManager->flush();
+            $this->entityManager->persist($userEntity);
+            $this->entityManager->flush();
 
-        $output->writeln("C'est OK");
-
-        return Command::SUCCESS;
+            $output->writeln("L'utilisateur " . $userEmail . " est maintenat Admin");
+            return Command::SUCCESS;
+        } else {
+            $output->writeln("L'utilisateur " . $userEmail . " n'existe pas");
+            return Command::FAILURE;
+        }
     }
 }
