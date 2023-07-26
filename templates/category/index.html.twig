@@ -6,6 +6,11 @@
 {% block body %}
 	<h1>Liste des catégories !</h1>
 
+	{{ form_start(form) }}
+	{{ form_row(form.categoryLabel) }}
+	<button type="submit">Recherche</button>
+	{{ form_end(form) }}
+
 	<ul>
 		{% for category in categories %}
 			<li>
@@ -15,4 +20,9 @@
 			</li>
 		{% endfor %}
 	</ul>
+
+	<div class="navigation">
+		{{ knp_pagination_render(categories) }}
+	</div>
+
 {% endblock %}

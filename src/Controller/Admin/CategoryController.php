@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
+use App\Form\CategorySearchType;
 use App\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/admin/category')]
 class CategoryController extends AbstractController
@@ -17,17 +20,32 @@ class CategoryController extends AbstractController
 
     public function __construct(
         private CategoryRepository $categoryRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private PaginatorInterface $paginator
     ) {
     }
 
     #[Route('/', name: 'app_category')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $categoryEntities = $this->categoryRepository->findAll();
+        $qb = $this->categoryRepository->getQbAll();
+
+        $form = $this->createForm(CategorySearchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            if ($data['categoryLabel'] !== null) {
+                $qb->andWhere('c.label LIKE :label')
+                    ->setParameter('label', "%" . $data['categoryLabel'] . "%");
+            }
+        }
+
+        $pagination = $this->paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 
         return $this->render('category/index.html.twig', [
-            'categories' => $categoryEntities
+            'categories' => $pagination,
+            'form' => $form->createView()
         ]);
     }
 

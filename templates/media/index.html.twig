@@ -4,13 +4,20 @@
 {% endblock %}
 
 {% block body %}
+
 	<h1>Liste des medias !</h1>
 
-	<form>
-		<label for="search">Recherche:</label>
-		<input type="text" id="search" name="search">
-		<button class="btn">submit</button>
-	</form>
+	{{ form_start(form) }}
+	{{ form_row(form.mediaTitle) }}
+	{{ form_row(form.userEmail) }}
+	{{ form_row(form.mediaCreatedAt) }}
+	<button type="submit">Recherche</button>
+	{{ form_end(form) }}
+
+	<p>Nombre de media :
+		{{ medias.totalItemCount }}
+	</p>
+
 	<ul>
 		{% for media in medias %}
 			<li>
@@ -18,4 +25,8 @@
 			</li>
 		{% endfor %}
 	</ul>
+
+	<div class="navigation">
+		{{ knp_pagination_render(medias) }}
+	</div>
 {% endblock %}
