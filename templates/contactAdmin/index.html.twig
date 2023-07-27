@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ContactController!
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des contacts !</h1>
+
+	<ul>
+		{% for contact in contacts %}
+			<li>
+				<a href="{{ path('app_contactAdmin_show', {'id': contact.id}) }}">{{ contact.email }}
+					{{ contact.createdAt|date('d/m/Y') }}, à
+					{{ contact.createdAt|date('H:i:s') }}
+					Status :
+					{{ contact.status }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+
+	<div class="navigation">
+		{{ knp_pagination_render(contacts) }}
+	</div>
+{% endblock %}

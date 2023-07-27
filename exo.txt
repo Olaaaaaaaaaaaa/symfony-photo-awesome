@@ -1,0 +1,29 @@
+Consignes : créer un système de demande de contact.
+Un visiteur du site va pouvoir envoyé une demande de contact qui va etre enregistré en base de données
+L'admin du site va pouvoir voir les demandes "non traitées" et les traiter
+
+
+
+
+Partie front : (tous les utilisateurs ont acces)
+	- un utilisateur anonyme va remplir un formulaire qui permet de renseigner : 
+		- son email
+		- le contenu de sa demande
+	- une fois le formulaire rempli va être ajouté en base de données avec un :
+		- status (string) : "non_lu"
+		- createdAt : date de la création.
+
+
+
+
+
+Partie Admin : (il n'y a que l'admin qui a acces)
+	- Faire une page : contact list
+		- la page va afficher une liste de toutes les demandes de contacts qui sont en status "non_lu"
+			- afficher date de création et status
+		- possibilité de cliquer sur une des demandes de contact, qui va ouvrir la demande dans une nouvelle page
+			- on va y retrouver toutes les informations (email, date, contenu)
+			- il va y avoir un bouton : "définir comme lu"
+				- le clique sur ce boutton permet de passer le status de la demande en : "lu"
+				- puis redirige sur la liste des demandes de contacts.
+		

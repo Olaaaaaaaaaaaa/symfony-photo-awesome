@@ -33,7 +33,7 @@ class SetTestMailCommand extends Command
         $response = $this->httpClient->request('POST', "https://api.brevo.com/v3/smtp/email", [
             'headers' => [
                 'accept' => 'application/json',
-                'api-key' => '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',
+                'api-key' => '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',
                 'content-type' => 'application/json'
             ],
             'json' => [
@@ -41,10 +41,10 @@ class SetTestMailCommand extends Command
                     'name' => 'Elias PODER',
                     'email' => 'elias.poder@gmail.com'
                 ],
-                'to' => [
+                'to' => [[
                     'email' => 'brightpuddi@gmail.com',
                     'name' => 'Bright PUDDI'
-                ],
+                ]],
                 'subject' => 'Bonjour !',
                 'htmlContent' => '<p>C\'est moi wsh</p>'
             ]
