@@ -74,4 +74,24 @@ class MediaController extends AbstractController
             'media' => $mediaEntity
         ]);
     }
+
+    #[Route('/add', name: 'app_media_add')]
+    public function add(Request $request): Response
+    {
+        $media = new Media();
+        $form = $this->createForm(MediaType::class, $media);
+
+        // $form->handleRequest($request);
+
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $this->entityManager->persist($media);
+        //     $this->entityManager->flush();
+
+        //     return $this->redirectToRoute('app_media');
+        // }
+
+        return $this->render('media/add.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
 }
