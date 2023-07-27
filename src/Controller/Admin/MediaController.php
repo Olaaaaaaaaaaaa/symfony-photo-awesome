@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/media')]
 class MediaController extends AbstractController
@@ -20,7 +23,8 @@ class MediaController extends AbstractController
     public function __construct(
         private MediaRepository $mediaRepository,
         private EntityManagerInterface $entityManager,
-        private PaginatorInterface $paginator
+        private PaginatorInterface $paginator,
+        private ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -76,19 +80,58 @@ class MediaController extends AbstractController
     }
 
     #[Route('/add', name: 'app_media_add')]
-    public function add(Request $request): Response
+    public function add(Request $request, SluggerInterface $slugger): Response
     {
+        /**
+         * Récupérer le user connecté
+         * Soit une entité User (si connecté)
+         * Soit null (si pas connecté)
+         */
+        $user = $this->getUser();
+
+        $uploadDirectory = $this->getParameter('upload_file');
+
         $media = new Media();
+        //Je relis le media au user connecté
+        $media->setUser($user);
+        //Je donne la date du jour
+        $media->setCreatedAt(new \DateTime());
+
         $form = $this->createForm(MediaType::class, $media);
 
-        // $form->handleRequest($request);
+        $form->handleRequest($request);
 
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $this->entityManager->persist($media);
-        //     $this->entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
 
-        //     return $this->redirectToRoute('app_media');
-        // }
+            $title = $media->getTitle();
+            $slug = $slugger->slug($title);
+            $media->setSlug($slug);
+
+            $file = $form->get('file')->getData();
+            if ($file) {
+                /** @var Uploaded $file */
+                $originalFileName = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+                $safeFilename = $slugger->slug($originalFileName);
+
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+
+                //Je bouge la photo dans le dossier d'upload avec un nouveau nom
+                try {
+                    $file->move(
+                        $this->getParameter('upload_file'),
+                        $newFilename
+                    );
+                    $media->setFilePath($newFilename);
+                } catch (FileException $e) {
+                }
+            }
+
+            $this->entityManager->persist($media);
+            $this->entityManager->flush();
+
+            return $this->redirectToRoute('app_media');
+        }
 
         return $this->render('media/add.html.twig', [
             'form' => $form->createView()
