@@ -1,5 +1,9 @@
 {# templates/partial/header.html.twig #}
 <div>
+	{# {% set medias = get_last_five_media() %}
+		{% for media in medias %}
+			<p>{{ media.title }}</p>
+		{% endfor %} #}
 	{% if app.user %}
 		{# Je suis connecté #}
 		<a href="{{ path('app_logout') }}">Se déconnecter</a>
